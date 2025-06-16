@@ -1,5 +1,5 @@
-# .github/workflows/test-wsl.yml
-name: Test WSL Issue
+# .github/workflows/test-wsl-fixed.yml
+name: Test WSL Issue Fixed
 on: [workflow_dispatch]
 jobs:
   test-wsl:
@@ -10,13 +10,8 @@ jobs:
       uses: Vampire/setup-wsl@v2
       with:
         distribution: Ubuntu-22.04
-    - name: Test datamule in WSL
+    - name: Install pip and test datamule
       run: |
-        wsl -e bash -c "
-        python3 -m pip install --user datamule
-        python3 -c '
-        from datamule import Portfolio
-        portfolio = Portfolio(\"apple\")
-        portfolio.download_submissions(ticker=\"AAPL\", submission_type=\"10-K\")
-        '
-        "
+        wsl -e bash -c "sudo apt update && sudo apt install -y python3-pip"
+        wsl -e bash -c "python3 -m pip install --user datamule"
+        wsl -e bash -c "python3 -c \"from datamule import Portfolio; portfolio = Portfolio('apple'); portfolio.download_submissions(ticker='AAPL', submission_type='10-K')\""
