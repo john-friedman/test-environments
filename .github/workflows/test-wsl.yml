@@ -1,0 +1,22 @@
+# .github/workflows/test-wsl.yml
+name: Test WSL Issue
+on: [workflow_dispatch]
+jobs:
+  test-wsl:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup WSL
+      uses: Vampire/setup-wsl@v2
+      with:
+        distribution: Ubuntu-22.04
+    - name: Test datamule in WSL
+      run: |
+        wsl -e bash -c "
+        python3 -m pip install --user datamule
+        python3 -c '
+        from datamule import Portfolio
+        portfolio = Portfolio(\"apple\")
+        portfolio.download_submissions(ticker=\"AAPL\", submission_type=\"10-K\")
+        '
+        "
